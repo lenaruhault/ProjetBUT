@@ -184,59 +184,158 @@ blogItems.forEach(item => {
 
 });
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.querySelectorAll(".ue-btn").forEach((btn) => {
+  // Fonction : afficher la bonne UE
 
-    btn.addEventListener("click", () => {
+  function afficherUE(sectionId) {
 
-      // Cacher tous les contenus UE
-      document.querySelectorAll(".ue-content").forEach((section) => {
-        section.style.display = "none";
-      });
+    // Cacher toutes les UE
 
-      // Afficher la section ciblée
-      const targetId = btn.getAttribute("data-ue-btn");
-      const target = document.getElementById(targetId);
+    document.querySelectorAll(".ue-content").forEach(section => {
 
-      if (target) {
-        target.style.display = "block";
-        window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+      section.style.display = "none";
+
+    });
+
+
+    // Cacher la liste des boutons de sélection
+
+    const selectionSection = document.getElementById("ue-selection");
+
+    if (selectionSection) selectionSection.style.display = "none";
+
+
+    // Afficher la bonne section
+
+    const target = document.getElementById(sectionId);
+
+    if (target) {
+
+      target.style.display = "block";
+
+      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
+
+
+      // Activer les modals de la section (si présente)
+
+      if (typeof activerModalsDansSection === "function") {
+
+        activerModalsDansSection(sectionId);
+
+      }
+
+
+      // Activer les pop-ups de la section
+
+      if (sectionId === "ue4") {
+
+        activerPopupsDansUE("ue4", ["UE4Trace1", "UE4Trace2", "UE4Trace3", "UE4Trace4"]);
+
+      } else if (sectionId === "ue5") {
+
+        activerPopupsDansUE("ue5", ["UE5Trace1", "UE5Trace2", "UE5Trace3"]);
+
+      } else if (sectionId === "ue6") {
+
+        activerPopupsDansUE("ue6", ["UE6Trace1", "UE6Trace2", "UE6Trace3", "UE6Trace4"]);
+
+      }
+
+    }
+
+  }
+
+
+  // Fonction : activer les pop-ups personnalisées
+
+  function activerPopupsDansUE(sectionId, popupIds) {
+
+    const section = document.getElementById(sectionId);
+
+    if (!section) return;
+
+
+    popupIds.forEach(id => {
+
+      const ouvrirBtn = section.querySelector(`#ouvrirPopup${id}`);
+
+      const fermerBtn = section.querySelector(`#fermerPopup${id}`);
+
+      const popup = section.querySelector(`#popup${id}`);
+
+
+      if (ouvrirBtn && fermerBtn && popup) {
+
+        ouvrirBtn.addEventListener("click", () => popup.style.display = "flex");
+
+        fermerBtn.addEventListener("click", () => popup.style.display = "none");
+
+
+        window.addEventListener("click", (e) => {
+
+          if (e.target === popup) popup.style.display = "none";
+
+        });
 
       }
 
     });
 
-  });
-});
-  
-  
- // Gérer le bouton Retour
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
 
-document.querySelectorAll(".btn-retour").forEach((btn) => {
+  // Clic sur les boutons d’ouverture des UE
 
-  btn.addEventListener("click", () => {
+  document.querySelectorAll(".ue-btn").forEach(btn => {
 
-    // Cacher toutes les UE
-    document.querySelectorAll(".ue-content").forEach((section) => {
-      section.style.display = "none";
+    btn.addEventListener("click", () => {
+
+      const targetId = btn.getAttribute("data-ue-btn");
+
+      afficherUE(targetId);
+
     });
 
-    // Optionnel : faire défiler jusqu'en haut
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+
+  // Clic sur les boutons retour
+
+  document.querySelectorAll(".btn-retour").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+      // Cacher toutes les sections UE
+
+      document.querySelectorAll(".ue-content").forEach(section => {
+
+        section.style.display = "none";
+
+      });
+
+
+      // Réafficher la liste des boutons UE
+
+      const selectionSection = document.getElementById("ue-selection");
+
+      if (selectionSection) selectionSection.style.display = "block";
+
+
+      // Revenir en haut de la page
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    });
 
   });
-});
 
 });
 
 
-closeDetailBtn.addEventListener("click", () => {
-  detailBox.classList.add("hidden");
-  document.querySelector(".blog-posts").style.display = "block";
-});
+
+
+
+
+
 
